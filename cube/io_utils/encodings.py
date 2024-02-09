@@ -7,6 +7,21 @@ from cube.io_utils.objects import Document
 
 class Encodings:
     def __init__(self, verbose=False):
+        """"Initializes the class with various dictionaries and lists used for data processing."
+        Parameters:
+            - verbose (bool): Whether or not to print verbose output during processing.
+        Returns:
+            - None: This function does not return any values.
+        Processing Logic:
+            - Initializes various dictionaries and lists.
+            - Sets the verbose attribute to the provided value.
+            - Does not return any values.
+        Example:
+            >>> processor = DataProcessor(verbose=True)
+            Initializing DataProcessor...
+            Dictionaries and lists initialized.
+            Verbose output enabled."""
+        
         self.word_list = {}
         self.hol_word_list = []
         self.char2int = {}
@@ -24,6 +39,24 @@ class Encodings:
         self.num_langs = 0
 
     def compute(self, train: Document, dev: Document, word_cutoff=7, char_cutoff=5, CUPT_format=False):
+        """Computes encoding maps for the given train and dev documents.
+        Parameters:
+            - train (Document): The training document.
+            - dev (Document): The development document.
+            - word_cutoff (int): The minimum number of occurrences for a word to be included in the encoding map. Default is 7.
+            - char_cutoff (int): The minimum number of occurrences for a character to be included in the encoding map. Default is 5.
+            - CUPT_format (bool): Whether the document is in CUPT format. Default is False.
+        Returns:
+            - None.
+        Processing Logic:
+            - Computes encoding maps for words, characters, labels, UPOS, XPOS, and ATTRS.
+            - If CUPT_format is True, encodes labels as separate entries.
+            - Adds special tokens for padding and unknown values.
+            - Forces addition of digits to character encoding.
+            - Prints the number of unique words, characters, labels, UPOS, XPOS, ATTRS, and holistic word count.
+        Example:
+            compute(train_doc, dev_doc, word_cutoff=10, char_cutoff=7, CUPT_format=True)"""
+        
         if self.verbose:
             print("Computing encoding maps... ")
 
@@ -140,6 +173,17 @@ class Encodings:
             print("Holistic word count: " + str(len(self.word2int)))
 
     def update_wordlist(self, dataset):
+        """Updates the word list with new words from the given dataset.
+        Parameters:
+            - dataset (Dataset): The dataset to update the word list with.
+        Returns:
+            - None: This function does not return any value.
+        Processing Logic:
+            - Iterate through each sequence in the dataset.
+            - Iterate through each entry in the sequence.
+            - Convert the word to lowercase.
+            - If the word is not already in the word list, add it with a count of 2."""
+        
         for seq in dataset.sequences:
             for entry in seq:
                 word = entry.word.lower()
@@ -147,6 +191,20 @@ class Encodings:
                     self.word_list[word] = 2  # word is inside an auxiliarly set (probably test)
 
     def load(self, filename):
+        """Loads data from a given file and initializes various attributes and dictionaries used for processing the data.
+        Parameters:
+            - filename (str): The name of the file to be loaded.
+        Returns:
+            - None
+        Processing Logic:
+            - Reads the number of languages from the first line of the file.
+            - Reads the number of labels and initializes the labels list and label2int dictionary.
+            - Reads the number of characters and initializes the characters list and char2int dictionary.
+            - Reads the number of words and initializes the word2int dictionary.
+            - Reads the number of upos labels and initializes the upos_list and upos2int dictionary.
+            - Reads the number of xpos labels and initializes the xpos_list and xpos2int dictionary.
+            - Reads the number of attributes labels and initializes the attrs_list and attrs2int dictionary."""
+        
         # We only read character2int, labels, holistic words and label2int here. word_list should be recomputed for every dataset (if deemed necessary)
         with open(filename, "r", encoding="utf8") as f:
             line = f.readline(5_000_000)
@@ -229,6 +287,22 @@ class Encodings:
             f.close()
 
     def save(self, filename):
+        """Saves the language model to a file.
+        Parameters:
+            - filename (str): The name of the file to save the language model to.
+        Returns:
+            - None: This function does not return anything.
+        Processing Logic:
+            - Opens the specified file in write mode.
+            - Writes the number of languages and labels to the file.
+            - Writes the label and its corresponding integer to the file.
+            - Writes the number of characters and their corresponding integers to the file.
+            - Writes the number of words and their corresponding integers to the file.
+            - Writes the number of universal part-of-speech tags and their corresponding integers to the file.
+            - Writes the number of language-specific part-of-speech tags and their corresponding integers to the file.
+            - Writes the number of attributes and their corresponding integers to the file.
+            - Closes the file after writing all the information."""
+        
         f = open(filename, "w", encoding="utf8")
         f.write("LANGS " + str(self.num_langs) + "\n")
         f.write("LABELS " + str(len(self.label2int)) + "\n")
