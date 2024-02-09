@@ -25,11 +25,11 @@ class DCWEDataset(Dataset):
 
     def load_language(self, filename: str, lang: str):
         f = open(filename, encoding='utf-8')
-        parts = f.readline().strip().split(' ')
+        parts = f.readline(5_000_000).strip().split(' ')
         num_examples = int(parts[0])
         vector_len = int(parts[1])
         for ii in range(num_examples):
-            parts = f.readline().strip().split(' ')
+            parts = f.readline(5_000_000).strip().split(' ')
             word = parts[0]
             vector = [float(pp) for pp in parts[1:]]
             self._examples.append([lang, word, vector])

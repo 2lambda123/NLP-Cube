@@ -149,78 +149,78 @@ class Encodings:
     def load(self, filename):
         # We only read character2int, labels, holistic words and label2int here. word_list should be recomputed for every dataset (if deemed necessary)
         with open(filename, "r", encoding="utf8") as f:
-            line = f.readline()
+            line = f.readline(5_000_000)
             self.num_langs = int(line.strip().split(' ')[-1])
-            line = f.readline()
+            line = f.readline(5_000_000)
             num_labels = int(line.split(" ")[1])
             if self.verbose:
                 print("Loading labels " + str(num_labels))
             self.labels = [""] * num_labels
             for _ in range(num_labels):
-                line = f.readline()
+                line = f.readline(5_000_000)
                 parts = line.split("\t")
                 key = parts[0]
                 value = int(parts[1])
                 self.label2int[key] = value
                 self.labels[value] = key
 
-            line = f.readline()
+            line = f.readline(5_000_000)
             num_characters = int(line.split(" ")[1])
             self.characters = [""] * num_characters
             if self.verbose:
                 print("Loading characters " + str(num_characters))
             for _ in range(num_characters):
-                line = f.readline()
+                line = f.readline(5_000_000)
                 parts = line.split("\t")
                 key = parts[0]
                 value = int(parts[1])
                 self.char2int[key] = value
                 self.characters[value] = key
-            line = f.readline()
+            line = f.readline(5_000_000)
             num_words = int(line.split(" ")[1])
             if self.verbose:
                 print("Loading words " + str(num_words))
             for _x in range(num_words):
-                line = f.readline()
+                line = f.readline(5_000_000)
                 parts = line.split("\t")
                 key = parts[0]
                 value = int(parts[1])
                 self.word2int[key] = value
 
             # morphological attributes
-            line = f.readline()
+            line = f.readline(5_000_000)
             num_labels = int(line.split(" ")[1])
             if self.verbose:
                 print("Loading upos " + str(num_labels))
             self.upos_list = [""] * num_labels
             for _ in range(num_labels):
-                line = f.readline()
+                line = f.readline(5_000_000)
                 parts = line.split("\t")
                 key = parts[0]
                 value = int(parts[1])
                 self.upos2int[key] = value
                 self.upos_list[value] = key
 
-            line = f.readline()
+            line = f.readline(5_000_000)
             num_labels = int(line.split(" ")[1])
             self.xpos_list = [""] * num_labels
             if self.verbose:
                 print("Loading xpos " + str(num_labels))
             for _ in range(num_labels):
-                line = f.readline()
+                line = f.readline(5_000_000)
                 parts = line.split("\t")
                 key = parts[0]
                 value = int(parts[1])
                 self.xpos2int[key] = value
                 self.xpos_list[value] = key
 
-            line = f.readline()
+            line = f.readline(5_000_000)
             num_labels = int(line.split(" ")[1])
             self.attrs_list = [""] * num_labels
             if self.verbose:
                 print("Loading attrs " + str(num_labels))
             for _ in range(num_labels):
-                line = f.readline()
+                line = f.readline(5_000_000)
                 parts = line.split("\t")
                 key = parts[0]
                 value = int(parts[1])
